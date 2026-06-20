@@ -99,17 +99,25 @@ with st.expander("Developer Debug Info"):
     st.write("Difficulty:", difficulty)
     st.write("History:", st.session_state.history)
 
-raw_guess = st.text_input(
-    "Enter your guess:",
-    key=f"guess_input_{difficulty}"
-)
+# BUG: The guess input and Submit button were separate widgets. In Streamlit,
+# pressing Enter in a text_input only re-runs the script without "clicking" the
+# button, so the guess was never processed on Enter (no hint appeared), and the
+# button could act on a not-yet-committed value, making guesses lag by one entry.
+# FIX: Wrap the input + submit in a st.form so pressing Enter OR clicking the
+# button submits atomically with the current value. New Game and Show hint stay
+# outside the form so they keep reacting immediately instead of waiting for a
+# form submit.
+with st.form("guess_form"):
+    raw_guess = st.text_input(
+        "Enter your guess:",
+        key=f"guess_input_{difficulty}"
+    )
+    submit = st.form_submit_button("Submit Guess 🚀")
 
-col1, col2, col3 = st.columns(3)
+col1, col2 = st.columns(2)
 with col1:
-    submit = st.button("Submit Guess 🚀")
-with col2:
     new_game = st.button("New Game 🔁")
-with col3:
+with col2:
     show_hint = st.checkbox("Show hint", value=True)
 
 # FIXME: Where New Game Bug begins
