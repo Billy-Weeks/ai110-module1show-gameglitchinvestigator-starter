@@ -1,4 +1,4 @@
-from logic_utils import check_guess
+from logic_utils import check_guess, new_game_state
 
 def test_winning_guess():
     # If the secret is 50 and guess is 50, it should be a win
@@ -26,3 +26,21 @@ def test_guess():
     outcome_low, message_low = check_guess(40, 50)
     assert outcome_low == "Too Low"
     assert "HIGHER" in message_low
+
+def test_new_game_resets_state():
+    # Regression test for the New Game bug: after a finished game,
+    # starting a new game must reset ALL per-game state, not just
+    # attempts and secret.
+    fresh = new_game_state(73)
+
+    # The status must return to "playing" so the game isn't frozen
+    # at the status guard (this was the cause of being locked out).
+    assert fresh["status"] == "playing"
+
+    # The rest of the session variables must reset too.
+    assert fresh["score"] == 0
+    assert fresh["history"] == []
+    assert fresh["attempts"] == 0
+
+    # The secret is whatever the caller passed in.
+    assert fresh["secret"] == 73
