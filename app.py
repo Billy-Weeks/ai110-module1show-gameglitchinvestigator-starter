@@ -87,18 +87,6 @@ if "attempts" not in st.session_state:
 
 st.subheader("Make a guess")
 
-st.info(
-    f"Guess a number between 1 and 100. "
-    f"Attempts left: {attempt_limit - st.session_state.attempts}"
-)
-
-with st.expander("Developer Debug Info"):
-    st.write("Secret:", st.session_state.secret)
-    st.write("Attempts:", st.session_state.attempts)
-    st.write("Score:", st.session_state.score)
-    st.write("Difficulty:", difficulty)
-    st.write("History:", st.session_state.history)
-
 # BUG: The guess input and Submit button were separate widgets. In Streamlit,
 # pressing Enter in a text_input only re-runs the script without "clicking" the
 # button, so the guess was never processed on Enter (no hint appeared), and the
@@ -175,6 +163,25 @@ if submit:
                     f"The secret was {st.session_state.secret}. "
                     f"Score: {st.session_state.score}"
                 )
+
+# BUG: These status displays were rendered ABOVE the `if submit:` block that
+# updates attempts/score/history. Since Streamlit runs the script top-to-bottom
+# in a single pass, they showed the PREVIOUS run's values — a one-step lag after
+# each guess.
+# FIX: Render them AFTER the submit processing so they reflect the just-updated
+# state. The form has to stay above (it must render to capture the guess); only
+# the read-only displays move down here.
+st.info(
+    f"Guess a number between 1 and 100. "
+    f"Attempts left: {attempt_limit - st.session_state.attempts}"
+)
+
+with st.expander("Developer Debug Info"):
+    st.write("Secret:", st.session_state.secret)
+    st.write("Attempts:", st.session_state.attempts)
+    st.write("Score:", st.session_state.score)
+    st.write("Difficulty:", difficulty)
+    st.write("History:", st.session_state.history)
 
 st.divider()
 st.caption("Built by an AI that claims this code is production-ready.")
