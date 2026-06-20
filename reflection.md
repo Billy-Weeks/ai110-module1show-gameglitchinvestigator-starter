@@ -8,15 +8,33 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - List at least two concrete bugs you noticed at the start  
   (for example: "the hints were backwards").
 
+1. Hints were not visible until "Submit Guess" was selected and then the hints were not what was expected. 
+    When the number guessed was higher than the secret number, the hint was given "Too Low". Then when the number guessed was lower than the secret number, the hint given was "Too High".
+
+2. Already have one "attempt" at start of game instead of 0. This causes "attempts allowed" to not equal "attempts left."
+    ***NOTE: This only happens at initial load of game page. 
+              If user selects "New Game" BEFORE end of first game, then attempts is accurate
+
+3. "New Game" button only resets secret number, and number of attempts. However previous score doesn't change nor does the guess history. Biggest part of this bug: You cannot enter any other guesses for the new game. 
+    ***NOTE: This bug only happens after previous game has finished
+
 **Bug Reproduction Log**
 
 Document at least 3 bugs you found. Add rows as needed.
 
-| Input | Expected Behavior | Actual Behavior | Console Output / Error |
-|-------|-------------------|-----------------|------------------------|
-| | | | |
-| | | | |
-| | | | |
+| Input             | Expected Behavior     | Actual Behavior       | Console Output / Error |
+|-------------------|-----------------------|-----------------------|------------------------|
+|   guess: 9        |Message saying too low | Message says too High |       Go LOWER!        |
+| (secret # = 86)   |                       |                       |                        |
+|-------------------|-----------------------|-----------------------|------------------------|
+|  Start up app     | No attempts recorded  |1 Attempt recorded     |       Attempts: 1      |
+|--------------------------------------------------------------------------------------------|
+|   Win/lose first  |                       |Score and history stay |                        |
+|game. Start new one|Reset of history/score |and no new guesses     |        None            |
+|                   |                       |       allowed         |                        |
+|--------------------------------------------------------------------------------------------|
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | ||
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | ||
 
 ---
 
