@@ -26,18 +26,17 @@ It wrote the code, ran away, and now the game is unplayable.
 ## 📝 Document Your Experience
 
 - [ ] Describe the game's purpose.
-The game is a basic "Guess the secret number game" where a user enters a number 1-100 and the game tells the user (if hints are enabled) if they need to "Go HIGHER!" or "Go LOWER!" on their next guess. Each difficulty has a certain number of attempts allowed and range of numbers the secret number will be chosen from
+      The game is a basic "Guess the secret number game" where a user enters a number 1-100 and the game tells the user (if hints are enabled) if they need to "Go HIGHER!" or "Go LOWER!" on their next guess. Each difficulty has a certain number of attempts allowed and range of numbers the secret number will be chosen from
 - [ ] Detail which bugs you found.
---Found the bug where after a win/loss of a game, a new game could not be started despite the attempts and secret number being reset.
---Also, found a bug where the wrong hint message was being sent to the user. They were told to guess higher, even though their previous guess was
-   greater than the secret number already or guess lower when their previous guess was already too low.
---The bug where a new spin up of the game already had the user with 1 attempt being recorded even though no guess was made yet.
---Enter/submit button press did not update "history" until next enter or submit was pressed
+      --Found the bug where after a win/loss of a game, a new game could not be started despite the attempts and secret number being reset.
+      --Also, found a bug where the wrong hint message was being sent to the user. They were told to guess higher, even though their previous guess was greater than the secret number already or guess lower when their previous guess was already too low.
+      --The bug where a new spin up of the game already had the user with 1 attempt being recorded even though no guess was made yet.
+      --Enter/submit button press did not update "history" until next enter or submit was pressed
 - [ ] Explain what fixes you applied.
--- Changed the order of the code so that the enter press updated the score, attempts left and history at time of press instead of next turn
--- Adjusted the hint messages to accurately describe where the guess was in relation to the secret number
--- Fixed the line of code which set the session state of attempts automatically to 1 at first spin up of game
--- Added lines of code so that ALL session state variables were reset at start of New Game, instead of just the secret number and attempts. (this
+      -- Changed the order of the code so that the enter press updated the score, attempts left and history at time of press instead of next turn
+      -- Adjusted the hint messages to accurately describe where the guess was in relation to the secret number
+      -- Fixed the line of code which set the session state of attempts automatically to 1 at first spin up of game
+      -- Added lines of code so that ALL session state variables were reset at start of New Game, instead of just the secret number and attempts. (this
       included the status variable which was stuck at won/loss causing the New Game button to not work)
 ## 📸 Demo Walkthrough
 
