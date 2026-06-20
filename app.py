@@ -73,20 +73,17 @@ low, high = get_range_for_difficulty(difficulty)
 st.sidebar.caption(f"Range: {low} to {high}")
 st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 
-if "secret" not in st.session_state:
-    st.session_state.secret = random.randint(low, high)
-
+# Seed a fresh game on first load. Reuse new_game_state (the same source of
+# truth as the New Game handler) so attempts starts at 0 — it was hardcoded
+# to 1 here, which made the count and "Attempts left" display off by one.
+# The guard keeps state persisting across Streamlit reruns.
 if "attempts" not in st.session_state:
-    st.session_state.attempts = 1
-
-if "score" not in st.session_state:
-    st.session_state.score = 0
-
-if "status" not in st.session_state:
-    st.session_state.status = "playing"
-
-if "history" not in st.session_state:
-    st.session_state.history = []
+    fresh = new_game_state(random.randint(low, high))
+    st.session_state.secret = fresh["secret"]
+    st.session_state.attempts = fresh["attempts"]
+    st.session_state.score = fresh["score"]
+    st.session_state.status = fresh["status"]
+    st.session_state.history = fresh["history"]
 
 st.subheader("Make a guess")
 
@@ -115,6 +112,7 @@ with col2:
 with col3:
     show_hint = st.checkbox("Show hint", value=True)
 
+# FIXME: Where New Game Bug begins
 if new_game:
     fresh = new_game_state(random.randint(1, 100))
     st.session_state.secret = fresh["secret"]
@@ -143,12 +141,7 @@ if submit:
     else:
         st.session_state.history.append(guess_int)
 
-        if st.session_state.attempts % 2 == 0:
-            secret = str(st.session_state.secret)
-        else:
-            secret = st.session_state.secret
-
-        outcome, message = check_guess(guess_int, secret)
+        outcome, message = check_guess(guess_int, st.session_state.secret)
 
         if show_hint:
             st.warning(message)

@@ -44,3 +44,19 @@ def test_new_game_resets_state():
 
     # The secret is whatever the caller passed in.
     assert fresh["secret"] == 73
+
+def test_fresh_game_starts_with_zero_attempts():
+    # Regression test for the off-by-one attempts bug: a fresh game must
+    # start with 0 attempts (it was hardcoded to 1 on first load, which
+    # made the count and "Attempts left" display off by one).
+    fresh = new_game_state(50)
+    assert fresh["attempts"] == 0
+
+def test_guess_compares_numerically_not_as_text():
+    # Regression test for the even-attempt stringify bug. When the secret was
+    # turned into a string, comparisons fell back to text: "9" > "10" is True
+    # lexicographically, so guessing 9 against secret 10 wrongly read "Too High".
+    # With integer comparison, 9 vs 10 must be "Too Low" -> go HIGHER.
+    outcome, message = check_guess(9, 10)
+    assert outcome == "Too Low"
+    assert "HIGHER" in message
